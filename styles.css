@@ -1,0 +1,148 @@
+/* ZIQO - native CSS */
+:root {
+  --warna-utama: #5b3df5;
+  --warna-teks: #1f2430;
+  --warna-latar: #f4f5fb;
+  --warna-kartu: #ffffff;
+  --warna-garis: #dcdfe8;
+  --warna-error: #c0392b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--warna-teks);
+  background: var(--warna-latar);
+}
+
+a { color: var(--warna-utama); }
+
+/* ===== Halaman login / register ===== */
+.auth-body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--warna-kartu);
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.auth-card h1 { margin: 0 0 4px; }
+.subtitle { margin: 0 0 20px; color: #6b7280; }
+.register-prompt { margin-top: 16px; text-align: center; }
+
+/* ===== Form ===== */
+.form-field { margin-bottom: 14px; }
+.form-field label { display: block; margin-bottom: 4px; font-weight: 600; }
+
+.crud-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--warna-garis);
+  border-radius: 8px;
+  font: inherit;
+}
+
+.primary-button {
+  display: inline-block;
+  width: 100%;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--warna-utama);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.form-status {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fdecea;
+  color: var(--warna-error);
+}
+
+/* ===== Layout dashboard ===== */
+.dashboard-body {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  background: var(--warna-kartu);
+  border-right: 1px solid var(--warna-garis);
+}
+
+.brand-name {
+  margin: 0 0 24px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--warna-utama);
+}
+
+.sidebar-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+
+.nav-link {
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--warna-teks);
+  text-decoration: none;
+}
+
+.nav-link:hover { background: var(--warna-latar); }
+.nav-link.active { background: var(--warna-utama); color: #fff; }
+.logout-link { color: var(--warna-error); }
+
+.dashboard-main { flex: 1; padding: 32px; }
+.dashboard-header h1 { margin: 0 0 4px; }
+.dashboard-header p { margin: 0 0 24px; color: #6b7280; }
+
+/* ===== Kartu statistik & CRUD ===== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  padding: 20px;
+  border-radius: 12px;
+  background: var(--warna-kartu);
+  border: 1px solid var(--warna-garis);
+  text-decoration: none;
+  color: inherit;
+}
+
+.stat-number { margin: 0; font-size: 2rem; font-weight: 800; color: var(--warna-utama); }
+.stat-label { margin: 4px 0 0; color: #6b7280; }
+
+.crud-card {
+  max-width: 480px;
+  padding: 24px;
+  border-radius: 12px;
+  background: var(--warna-kartu);
+  border: 1px solid var(--warna-garis);
+}
+
+@media (max-width: 640px) {
+  .dashboard-body { flex-direction: column; }
+  .sidebar { width: 100%; border-right: 0; border-bottom: 1px solid var(--warna-garis); }
+  .sidebar-nav { flex-direction: row; flex-wrap: wrap; }
+  .dashboard-main { padding: 20px 16px; }
+}

@@ -1,0 +1,36 @@
+{
+    "users": [
+        {
+            "id": 1,
+            "nama": "Demo ZIQO",
+            "email": "demo@ziqo.id",
+            "password": "demo123"
+        },
+        {
+            "id": 2,
+            "nama": "testinguser",
+            "email": "testing@mail.com",
+            "password": "testing"
+        },
+        {
+            "id": 3,
+            "nama": "User Ganteng Cantik",
+            "email": "UserGantengCantik@gmail.com",
+            "telepon": "08123456789",
+            "password": "user123"
+        }
+    ],
+    "categories": [],
+    "quizzes": [],
+    "questions": [],
+    "rooms": [],
+    "attempts": [],
+    "next_id": {
+        "users": 4,
+        "categories": 1,
+        "quizzes": 1,
+        "questions": 1,
+        "rooms": 1,
+        "attempts": 1
+    }
+}
