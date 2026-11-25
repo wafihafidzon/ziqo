@@ -132,9 +132,11 @@ class RoomTest extends TestCase
         $room = $this->buatRoom();
         $admin = User::where('email', 'admin@ziqo.id')->firstOrFail();
 
+        $this->actingAs($this->guru)->get(route('dashboard'))->assertSee('Ruang mengajar');
+        $this->actingAs($admin)->get(route('dashboard'))->assertDontSee('Ruang mengajar')->assertSee('Statistik platform');
         foreach ([$this->guru, $admin] as $u) {
             $this->actingAs($u)->get(route('dashboard'))->assertOk()
-                ->assertSee('Ruang mengajar')->assertSee('Room aktif')->assertSee($room->kode_akses)
+                ->assertSee('Room aktif')->assertSee($room->kode_akses)
                 ->assertDontSee('XP')->assertDontSee('Perkembangan nilai')->assertDontSee('Nilai per mata pelajaran')
                 ->assertDontSee('Rekomendasi untukmu')->assertDontSee(route('pencapaian'));
         }
@@ -189,6 +191,28 @@ class RoomTest extends TestCase
 
         $this->quiz->update(['akses' => 'publik']);
         $this->actingAs($this->peserta)->get(route('jelajah'))->assertSee($judul);
+    }
+
+    public function test_admin_hanya_supervisor_tanpa_kuis_sendiri(): void
+    {
+        $admin = User::where('email', 'admin@ziqo.id')->firstOrFail();
+        $jumlah = Quiz::count();
+
+        $this->actingAs($admin)->get(route('dashboard'))->assertOk()
+            ->assertDontSee('Kuis Buatan Saya')->assertDontSee('>Mengajar<', false)->assertSee('Penilaian Esai (cadangan)');
+        $this->actingAs($admin)->get(route('pengajar.kuis'))->assertRedirect(route('admin.kuis'));
+        $this->actingAs($admin)->get(route('pengajar.kuis.create'))->assertRedirect(route('admin.kuis'));
+        $this->actingAs($admin)->post(route('pengajar.kuis.create'), ['judul' => 'Kuis admin baru', 'category_id' => $this->quiz->category_id, 'kesulitan' => 'mudah', 'jenjang' => 'umum', 'durasi_menit' => 0])
+            ->assertRedirect(route('admin.kuis'));
+        $this->assertSame($jumlah, Quiz::count());
+
+        // Pengawasan tetap jalan: kelola soal/hasil kuis pengajar dan penilaian esai cadangan.
+        $this->actingAs($admin)->get(route('pengajar.soal', $this->quiz->id))->assertOk()->assertSee('Pantau kuis');
+        $this->actingAs($admin)->get(route('pengajar.hasil', $this->quiz->id))->assertOk();
+        $this->actingAs($admin)->get(route('pengajar.penilaian'))->assertOk()->assertSee('cadangan');
+
+        $this->actingAs($this->guru)->get(route('dashboard'))->assertSee('Kuis Saya')->assertDontSee('cadangan');
+        $this->actingAs($this->guru)->get(route('pengajar.kuis.create'))->assertOk();
     }
 
     public function test_ringkasan_room_pengajar_hanya_kuis_sendiri_admin_semua(): void

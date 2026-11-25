@@ -2,7 +2,7 @@
 
 @section('konten')
 @php $g = fn($k, $d = '') => (string) ($v[$k] ?? $d); @endphp
-<div class="remah"><a href="{{ route('pengajar.kuis') }}">Kuis saya</a> {!! icon('chevron') !!} <span>{!! $quiz ? e($quiz['judul']) : 'Kuis baru' !!}</span></div>
+<div class="remah"><a href="{{ kuis_induk()[1] }}">{{ kuis_induk()[0] }}</a> {!! icon('chevron') !!} <span>{!! $quiz ? e($quiz['judul']) : 'Kuis baru' !!}</span></div>
 <div class="kepala-halaman"><div><h1>{!! $quiz ? 'Edit pengaturan kuis' : 'Buat kuis baru' !!}</h1><p>{!! $quiz ? 'Perubahan berlaku untuk pengerjaan berikutnya.' : 'Kuis baru disimpan sebagai draft sampai kamu menerbitkannya.' !!}</p></div></div>
 
 <form method="post" class="grid grid-sidebar" data-validasi>
@@ -80,7 +80,7 @@
     </section>
     <div class="aksi-form">
       <button class="btn btn-besar" type="submit">{!! icon('cek') !!} {!! $quiz ? 'Simpan' : 'Buat & tambah soal' !!}</button>
-      <a class="btn btn-teks" href="{{ $quiz ? route('pengajar.soal', $quiz['id']) : route('pengajar.kuis') }}">Batal</a>
+      <a class="btn btn-teks" href="{{ $quiz ? route('pengajar.soal', $quiz['id']) : kuis_induk()[1] }}">Batal</a>
     </div>
   </aside>
 </form>

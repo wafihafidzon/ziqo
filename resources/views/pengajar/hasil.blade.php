@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('konten')
-<div class="remah"><a href="{{ route('pengajar.kuis') }}">Kuis saya</a> {!! icon('chevron') !!} <span>{{ $quiz['judul'] }}</span></div>
+<div class="remah"><a href="{{ kuis_induk()[1] }}">{{ kuis_induk()[0] }}</a> {!! icon('chevron') !!} <span>{{ $quiz['judul'] }}</span></div>
 <div class="kepala-halaman">
   <div><h1>Hasil peserta</h1><p>{{ $quiz['judul'] }} · {{ $quiz['kategori'] }}</p></div>
   <a class="btn btn-putih" href="{{ route('pengajar.soal', $quiz['id']) }}">{!! icon('soal') !!} Kelola soal</a>

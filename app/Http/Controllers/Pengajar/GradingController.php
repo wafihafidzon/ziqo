@@ -36,7 +36,7 @@ class GradingController extends Controller
         $user = $this->user();
         return view('pengajar.penilaian', [
             'title' => 'Penilaian Esai',
-            'menu' => 'penilaian',
+            'menu' => $user->hasRole('admin') ? 'admin-esai' : 'penilaian',
             'rows' => $stats->pendingEssays($user->hasRole('admin') ? null : $user->id, 100),
         ]);
     }
@@ -47,7 +47,7 @@ class GradingController extends Controller
         $peserta = $attempt->user;
         return view('pengajar.nilai', [
             'title' => 'Penilaian: ' . $peserta['nama'],
-            'menu' => 'penilaian',
+            'menu' => $this->user()->hasRole('admin') ? 'admin-esai' : 'penilaian',
             'quiz' => $quiz,
             'a' => $attempt,
             'peserta' => $peserta,

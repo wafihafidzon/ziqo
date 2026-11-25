@@ -17,11 +17,15 @@ $nav = [
 ];
 if ($guru) {
     $esaiMenunggu = min(99, app(\App\Services\StatsService::class)->pendingEssayCount($admin ? null : $u->id));
-    $nav[] = ['Mengajar', array_filter([
-        ['kuis-saya', route('pengajar.kuis'), $admin ? 'Kuis Buatan Saya' : 'Kuis Saya', 'quiz'],
-        $admin ? null : ['room-pantau', route('pengajar.rooms'), 'Room Saya', 'kunci'],
+}
+// Admin hanya supervisor: tidak punya menu Mengajar; halaman kelola kuis milik pengajar disorot sebagai Pantau Kuis.
+if ($admin && $menu === 'kuis-saya') $menu = 'admin-kuis';
+if ($guru && !$admin) {
+    $nav[] = ['Mengajar', [
+        ['kuis-saya', route('pengajar.kuis'), 'Kuis Saya', 'quiz'],
+        ['room-pantau', route('pengajar.rooms'), 'Room Saya', 'kunci'],
         ['penilaian', route('pengajar.penilaian'), 'Penilaian Esai', 'pena', $esaiMenunggu],
-    ])];
+    ]];
 }
 if ($admin) {
     $nav[] = ['Administrator', [
@@ -29,6 +33,7 @@ if ($admin) {
         ['admin-kategori', route('admin.kategori'), 'Kategori & Topik', 'kategori'],
         ['admin-kuis', route('admin.kuis'), 'Pantau Kuis', 'perisai'],
         ['room-pantau', route('pengajar.rooms'), 'Pantau Room', 'kunci'],
+        ['admin-esai', route('pengajar.penilaian'), 'Penilaian Esai (cadangan)', 'pena', $esaiMenunggu],
     ]];
 }
 @endphp

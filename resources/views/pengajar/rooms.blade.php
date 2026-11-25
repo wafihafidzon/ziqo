@@ -5,7 +5,7 @@
 <div class="kepala-halaman">
   <div>
     <h1>{{ $admin ? 'Pantau room' : 'Room saya' }}</h1>
-    <p>{{ $admin ? 'Seluruh room dari semua pengajar.' : 'Semua room dari kuis buatanmu.' }} Ada <b>{!! (int) $aktif !!}</b> room yang sedang dibuka. Buat room baru dari menu <a href="{{ route('pengajar.kuis') }}">{{ $admin ? 'Kuis Buatan Saya' : 'Kuis Saya' }}</a>.</p>
+    <p>{{ $admin ? 'Seluruh room dari semua pengajar.' : 'Semua room dari kuis buatanmu.' }} Ada <b>{!! (int) $aktif !!}</b> room yang sedang dibuka. Buat room baru dari menu <a href="{{ kuis_induk()[1] }}">{{ $admin ? 'Pantau Kuis' : 'Kuis Saya' }}</a>.</p>
   </div>
 </div>
 

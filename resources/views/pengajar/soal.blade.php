@@ -2,7 +2,7 @@
 
 @section('konten')
 @php $totalPoin = $soal->sum('poin'); @endphp
-<div class="remah"><a href="{{ route('pengajar.kuis') }}">Kuis saya</a> {!! icon('chevron') !!} <span>{{ $quiz['judul'] }}</span></div>
+<div class="remah"><a href="{{ kuis_induk()[1] }}">{{ kuis_induk()[0] }}</a> {!! icon('chevron') !!} <span>{{ $quiz['judul'] }}</span></div>
 <div class="kepala-halaman">
   <div>
     <h1>{{ $quiz['judul'] }}</h1>

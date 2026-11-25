@@ -22,7 +22,9 @@ class DashboardController extends Controller
                 'title' => 'Dashboard',
                 'menu' => 'dashboard',
                 'user' => $user,
-                'guru' => $stats->teacher($uid),
+                'mengajar' => true,
+                // Admin supervisor tidak punya kuis sendiri, jadi tanpa ringkasan "Ruang mengajar".
+                'guru' => $admin ? null : $stats->teacher($uid),
                 'esai' => $stats->pendingEssays($admin ? null : $uid, 5),
                 'roomAktif' => $rooms->overview($admin ? null : $uid, ['status' => 'buka'], 5),
             ];

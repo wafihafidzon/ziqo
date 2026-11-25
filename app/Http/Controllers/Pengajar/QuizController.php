@@ -14,6 +14,9 @@ class QuizController extends Controller
 
     public function index(StatsService $stats)
     {
+        // Admin adalah supervisor tanpa kuis sendiri; semua kuis dipantau dari Pantau Kuis.
+        if ($this->user()->hasRole('admin')) return redirect()->route('admin.kuis');
+
         return view('pengajar.kuis', [
             'title' => 'Kuis Saya',
             'menu' => 'kuis-saya',
@@ -51,6 +54,10 @@ class QuizController extends Controller
     public function form(Request $request, ?int $id = null)
     {
         $quiz = $id ? $this->kuisKelola($id) : null;
+        if (!$quiz && $this->user()->hasRole('admin')) {
+            flash('info', 'Administrator tidak membuat kuis. Kuis dibuat oleh pengajar; kamu tetap bisa memantau dan memperbaikinya dari Pantau Kuis.');
+            return redirect()->route('admin.kuis');
+        }
 
         if ($request->isMethod('post')) {
             [$data, $errors] = $this->quizzes->validate($request->all());

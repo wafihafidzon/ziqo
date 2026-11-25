@@ -2,7 +2,7 @@
 
 @section('konten')
 @php $gayaKode = 'font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em'; @endphp
-<div class="remah"><a href="{{ route('pengajar.kuis') }}">Kuis saya</a> {!! icon('chevron') !!} <span>{{ $quiz['judul'] }}</span></div>
+<div class="remah"><a href="{{ kuis_induk()[1] }}">{{ kuis_induk()[0] }}</a> {!! icon('chevron') !!} <span>{{ $quiz['judul'] }}</span></div>
 <div class="kepala-halaman">
   <div><h1>Room kuis</h1><p>Buat sesi dengan kode akses agar peserta di kelasmu masuk ke kuis yang sama.</p></div>
   <form method="post">

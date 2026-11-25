@@ -73,6 +73,12 @@ function salam(): string
     return $j < 11 ? 'Selamat pagi' : ($j < 15 ? 'Selamat siang' : ($j < 18 ? 'Selamat sore' : 'Selamat malam'));
 }
 
+/** Induk halaman kelola kuis: admin kembali ke Pantau Kuis, pengajar ke Kuis Saya. */
+function kuis_induk(): array
+{
+    return auth()->user()?->hasRole('admin') ? ['Pantau kuis', route('admin.kuis')] : ['Kuis saya', route('pengajar.kuis')];
+}
+
 function avatar_url($user): string
 {
     $nama = $user['avatar'] ?? null;

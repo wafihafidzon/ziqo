@@ -8,7 +8,7 @@ $kunci = $v['kunci'] ?? ($tipe === 'pg' ? '' : []);
 $jawaban = array_values((array) ($v['jawaban'] ?? ['']));
 if (!$jawaban) $jawaban = [''];
 @endphp
-<div class="remah"><a href="{{ route('pengajar.kuis') }}">Kuis saya</a> {!! icon('chevron') !!} <a href="{{ route('pengajar.soal', $quiz['id']) }}">{{ $quiz['judul'] }}</a> {!! icon('chevron') !!} <span>{!! $soal ? 'Edit soal' : 'Soal baru' !!}</span></div>
+<div class="remah"><a href="{{ kuis_induk()[1] }}">{{ kuis_induk()[0] }}</a> {!! icon('chevron') !!} <a href="{{ route('pengajar.soal', $quiz['id']) }}">{{ $quiz['judul'] }}</a> {!! icon('chevron') !!} <span>{!! $soal ? 'Edit soal' : 'Soal baru' !!}</span></div>
 <div class="kepala-halaman"><div><h1>{!! $soal ? 'Edit soal' : 'Tambah soal' !!}</h1><p>Jenis: <b>{{ TIPE_SOAL[$tipe] }}</b></p></div></div>
 
 @if ($errors)<div class="alert alert-error" role="alert">{!! icon('peringatan') !!}<span>Periksa kembali: {{ implode(' ', $errors) }}</span></div>@endif

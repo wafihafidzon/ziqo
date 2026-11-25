@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('konten')
-<div class="kepala-halaman"><div><h1>Penilaian esai</h1><p>Pengerjaan berisi soal esai yang belum dinilai, diurutkan dari yang paling lama menunggu.</p></div></div>
+<div class="kepala-halaman"><div><h1>Penilaian esai</h1><p>Pengerjaan berisi soal esai yang belum dinilai, diurutkan dari yang paling lama menunggu.@if (auth()->user()->hasRole('admin')) Sebagai administrator, kamu menilai hanya sebagai cadangan bila pengajar pembuat kuis berhalangan.@endif</p></div></div>
 <section class="kartu">
   @if (count($rows))
     <ul class="aktivitas">

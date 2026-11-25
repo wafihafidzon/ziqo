@@ -3,7 +3,7 @@
 @section('konten')
 @php
 $namaDepan = explode(' ', trim($user['nama']))[0];
-$mengajar = isset($guru);
+$mengajar = $mengajar ?? false;
 if (!$mengajar) {
     $adaData = (int) $stat['total'] > 0;
     $totalJawab = (int) $stat['benar'] + (int) $stat['salah'];
@@ -50,8 +50,13 @@ if (!$mengajar) {
     <div class="info">{!! icon('riwayat') !!}<div><small>Total pengerjaan</small><b>{!! (int) $guru['percobaan'] !!}</b></div></div>
     <div class="info">{!! icon('target') !!}<div><small>Rata-rata peserta</small><b>{!! $guru['rata'] !== null ? angka($guru['rata'], 1) : '–' !!}</b></div></div>
   </div>
-  @if ($esai->isNotEmpty())
-    <h3 class="mt-2" style="font-size:1rem">{!! count($esai) !!} pengerjaan menunggu penilaian esai</h3>
+</section>
+@endif
+
+@if ($mengajar && $esai->isNotEmpty())
+<section class="kartu mt-2">
+  <div class="kartu-judul"><h2>{!! icon('pena') !!} {!! count($esai) !!} pengerjaan menunggu penilaian esai</h2><a href="{{ route('pengajar.penilaian') }}" class="kecil tebal">Semua</a></div>
+  @if (isset($platform))<p class="muted">Penilaian biasanya dilakukan pengajar pembuat kuis. Nilai di sini hanya sebagai cadangan.</p>@endif
     <ul class="aktivitas">
       @foreach ($esai as $a)
         <li class="w-kuning"><span class="bulat">{!! icon('pena') !!}</span>
@@ -59,9 +64,10 @@ if (!$mengajar) {
           <a class="btn btn-kecil btn-kuning" href="{{ route('pengajar.nilai', $a['id']) }}">Nilai</a></li>
       @endforeach
     </ul>
-  @endif
 </section>
+@endif
 
+@if ($mengajar)
 <section class="kartu mt-2">
   <div class="kartu-judul"><h2>{!! icon('kunci') !!} Room aktif</h2><a href="{{ route('pengajar.rooms') }}" class="kecil tebal">Semua room</a></div>
   @if ($roomAktif->isNotEmpty())
@@ -74,7 +80,7 @@ if (!$mengajar) {
       @endforeach
     </ul>
   @else
-    <p class="muted mb-0">Tidak ada room yang sedang dibuka. Buat room dari menu <a href="{{ route('pengajar.kuis') }}">Kuis Saya</a>.</p>
+    <p class="muted mb-0">Tidak ada room yang sedang dibuka. Buat room dari menu <a href="{{ kuis_induk()[1] }}">{{ isset($platform) ? 'Pantau Kuis' : 'Kuis Saya' }}</a>.</p>
   @endif
 </section>
 @endif
