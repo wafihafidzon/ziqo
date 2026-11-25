@@ -56,6 +56,7 @@ class QuizController extends Controller
             'riwayatSaya' => $riwayatSaya,
             'berlangsung' => $berlangsung,
             'bisaKelola' => $this->quizzes->canManage($quiz, $user),
+            'mengajar' => (bool) $user?->hasRole('pengajar', 'admin'),
             'lainnya' => $this->quizzes->related($quiz),
         ]);
     }
@@ -63,6 +64,11 @@ class QuizController extends Controller
     public function start(int $id, AttemptService $attempts)
     {
         $quiz = $this->visibleQuiz($id);
+        // Pengajar/admin tidak mengerjakan kuis agar statistik peserta tetap bersih.
+        if ($this->user()->hasRole('pengajar', 'admin')) {
+            flash('info', 'Pengajar dan administrator tidak mengerjakan kuis. Gunakan Kelola soal untuk memeriksa isi kuis.');
+            return redirect()->route('kuis.show', $id);
+        }
         if ($quiz->status !== 'terbit') {
             flash('error', 'Kuis masih draft. Terbitkan terlebih dahulu agar dapat dikerjakan.');
             return redirect()->route('kuis.show', $id);

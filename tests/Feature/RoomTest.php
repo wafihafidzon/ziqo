@@ -127,6 +127,37 @@ class RoomTest extends TestCase
         $this->actingAs($this->peserta)->get(route('dashboard'))->assertSee('Masuk Room');
     }
 
+    public function test_dashboard_pengajar_tanpa_data_belajar_dan_menampilkan_room_aktif(): void
+    {
+        $room = $this->buatRoom();
+        $admin = User::where('email', 'admin@ziqo.id')->firstOrFail();
+
+        foreach ([$this->guru, $admin] as $u) {
+            $this->actingAs($u)->get(route('dashboard'))->assertOk()
+                ->assertSee('Ruang mengajar')->assertSee('Room aktif')->assertSee($room->kode_akses)
+                ->assertDontSee('XP')->assertDontSee('Perkembangan nilai')->assertDontSee('Nilai per mata pelajaran')
+                ->assertDontSee('Rekomendasi untukmu')->assertDontSee(route('pencapaian'));
+        }
+        $this->actingAs($this->peserta)->get(route('dashboard'))->assertOk()
+            ->assertSee('XP')->assertSee('Perkembangan nilai')->assertDontSee('Ruang mengajar');
+    }
+
+    public function test_pengajar_dan_admin_tidak_mengerjakan_kuis(): void
+    {
+        $admin = User::where('email', 'admin@ziqo.id')->firstOrFail();
+
+        foreach ([$this->guru, $admin] as $u) {
+            $this->actingAs($u)->get(route('kuis.show', $this->quiz->id))->assertOk()
+                ->assertDontSee('Mulai kuis')->assertSee('Lihat hasil peserta');
+            $this->actingAs($u)->post('/kuis/' . $this->quiz->id)->assertRedirect(route('kuis.show', $this->quiz->id));
+            $this->assertSame(0, Attempt::where('user_id', $u->id)->count());
+            $this->actingAs($u)->get(route('riwayat'))->assertForbidden();
+            $this->actingAs($u)->get(route('pencapaian'))->assertForbidden();
+        }
+        $this->actingAs($this->peserta)->get(route('kuis.show', $this->quiz->id))->assertSee('Mulai kuis');
+        $this->actingAs($this->peserta)->get(route('riwayat'))->assertOk();
+    }
+
     public function test_ringkasan_room_pengajar_hanya_kuis_sendiri_admin_semua(): void
     {
         $milikGuru = $this->buatRoom();

@@ -3,13 +3,19 @@
 @section('konten')
 @php
 $namaDepan = explode(' ', trim($user['nama']))[0];
-$adaData = (int) $stat['total'] > 0;
-$totalJawab = (int) $stat['benar'] + (int) $stat['salah'];
+$mengajar = isset($guru);
+if (!$mengajar) {
+    $adaData = (int) $stat['total'] > 0;
+    $totalJawab = (int) $stat['benar'] + (int) $stat['salah'];
+}
 @endphp
 <section class="sambutan">
   @include('partials.deko', ['varian' => 'gelap'])
   <div class="isi">
     <h1>{{ salam() }}, {{ $namaDepan }}!</h1>
+    @if ($mengajar)
+    <p>Pantau kuis, room, dan perkembangan pesertamu dari sini.</p>
+    @else
     <p>{!! $adaData ? 'Kamu sudah menyelesaikan ' . (int) $stat['total'] . ' kuis. Pertahankan semangat belajarmu!' : 'Ayo mulai kuis pertamamu dan raih badge First Step.' !!}</p>
     <div class="level-kotak">
       <span class="lvl" title="Level">{!! (int) $level['level'] !!}</span>
@@ -18,16 +24,19 @@ $totalJawab = (int) $stat['benar'] + (int) $stat['salah'];
         <div class="progress kuning" role="progressbar" aria-label="Kemajuan level" aria-valuemin="0" aria-valuemax="{!! (int) $level['butuh'] !!}" aria-valuenow="{!! (int) $level['progres'] !!}"><span style="width:{!! round($level['progres'] / $level['butuh'] * 100) !!}%"></span></div>
       </div>
     </div>
+    @endif
   </div>
   <img class="maskot" src="{{ asset('assets/maskot.webp') }}" alt="">
 </section>
 
+@unless ($mengajar)
 <div class="grid grid-4 mt-2">
   <div class="stat w-ungu"><span class="stat-ikon">{!! icon('quiz') !!}</span><span class="stat-nilai">{!! (int) $stat['total'] !!}</span><span class="stat-label">Kuis diselesaikan{!! (int) $stat['menunggu'] ? ' · ' . (int) $stat['menunggu'] . ' menunggu nilai' : '' !!}</span></div>
   <div class="stat w-biru"><span class="stat-ikon">{!! icon('target') !!}</span><span class="stat-nilai">{!! $adaData ? angka($stat['rata'], 1) : '–' !!}</span><span class="stat-label">Rata-rata nilai</span></div>
   <div class="stat w-kuning"><span class="stat-ikon">{!! icon('bintang') !!}</span><span class="stat-nilai">{!! $adaData ? angka($stat['tertinggi']) : '–' !!}</span><span class="stat-label">Nilai tertinggi</span></div>
   <div class="stat w-hijau"><span class="stat-ikon">{!! icon('cek') !!}</span><span class="stat-nilai">{!! (int) $stat['benar'] !!}<small> / {!! (int) $stat['salah'] !!} salah</small></span><span class="stat-label">Jawaban benar{!! $totalJawab ? ' (' . round($stat['benar'] / $totalJawab * 100) . '% akurasi)' : '' !!}</span></div>
 </div>
+@endunless
 
 @if (isset($guru))
 <section class="kartu mt-2">
@@ -52,6 +61,22 @@ $totalJawab = (int) $stat['benar'] + (int) $stat['salah'];
     </ul>
   @endif
 </section>
+
+<section class="kartu mt-2">
+  <div class="kartu-judul"><h2>{!! icon('kunci') !!} Room aktif</h2><a href="{{ route('pengajar.rooms') }}" class="kecil tebal">Semua room</a></div>
+  @if ($roomAktif->isNotEmpty())
+    <ul class="aktivitas">
+      @foreach ($roomAktif as $r)
+        <li class="w-hijau"><span class="bulat">{!! icon('kunci') !!}</span>
+          <div class="isi"><b><span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em">{{ $r->kode_akses }}</span> · {{ $r->quiz?->judul }}</b>
+            <small>{!! (int) $r->attempts_count !!} peserta · {!! (int) $r->sedang_count !!} sedang mengerjakan</small></div>
+          <a class="btn btn-kecil btn-putih" href="{{ route('pengajar.room', [$r->quiz_id, 'room' => $r->id]) }}">Peserta</a></li>
+      @endforeach
+    </ul>
+  @else
+    <p class="muted mb-0">Tidak ada room yang sedang dibuka. Buat room dari menu <a href="{{ route('pengajar.kuis') }}">Kuis Saya</a>.</p>
+  @endif
+</section>
 @endif
 
 @if (isset($platform))
@@ -72,6 +97,7 @@ $totalJawab = (int) $stat['benar'] + (int) $stat['salah'];
 </section>
 @endif
 
+@unless ($mengajar)
 <div class="grid grid-sidebar mt-2">
   <div class="tumpuk">
     <section class="kartu">
@@ -148,4 +174,5 @@ $totalJawab = (int) $stat['benar'] + (int) $stat['salah'];
     </section>
   </div>
 </div>
+@endunless
 @endsection

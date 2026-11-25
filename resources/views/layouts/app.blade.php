@@ -8,8 +8,10 @@ $nav = [
         ['dashboard', route('dashboard'), 'Dashboard', 'home'],
         ['jelajah', route('jelajah'), 'Jelajah Kuis', 'jelajah'],
         ...($guru ? [] : [['room', route('room'), 'Masuk Room', 'kunci']]),
-        ['riwayat', route('riwayat'), 'Riwayat', 'riwayat'],
-        ['pencapaian', route('pencapaian'), 'Pencapaian', 'trofi'],
+        ...($guru ? [] : [
+            ['riwayat', route('riwayat'), 'Riwayat', 'riwayat'],
+            ['pencapaian', route('pencapaian'), 'Pencapaian', 'trofi'],
+        ]),
         ['profil', route('profil'), 'Profil', 'profil'],
     ]],
 ];
@@ -68,8 +70,10 @@ if ($admin) {
         </button>
         <div class="user-dropdown" id="user-dropdown" hidden>
           <a href="{{ route('profil') }}">{!! icon('profil') !!} Profil saya</a>
+          @unless ($guru)
           <a href="{{ route('pencapaian') }}">{!! icon('trofi') !!} Pencapaian</a>
           <a href="{{ route('riwayat') }}">{!! icon('riwayat') !!} Riwayat</a>
+          @endunless
           <hr>
           <form method="post" action="{{ route('logout') }}">
             @csrf

@@ -37,9 +37,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/room', [RoomController::class, 'show'])->name('room');
     Route::post('/room', [RoomController::class, 'join'])->middleware('throttle:20,1');
 
-    Route::get('/riwayat', [StudentController::class, 'history'])->name('riwayat');
-    Route::post('/riwayat', [StudentController::class, 'resetHistory']);
-    Route::get('/pencapaian', [StudentController::class, 'achievements'])->name('pencapaian');
+    // Riwayat & pencapaian hanya untuk peserta; pengajar/admin tidak mengerjakan kuis.
+    Route::middleware('role:peserta')->group(function () {
+        Route::get('/riwayat', [StudentController::class, 'history'])->name('riwayat');
+        Route::post('/riwayat', [StudentController::class, 'resetHistory']);
+        Route::get('/pencapaian', [StudentController::class, 'achievements'])->name('pencapaian');
+    });
 
     Route::get('/profil', [ProfileController::class, 'show'])->name('profil');
     Route::post('/profil', [ProfileController::class, 'update']);

@@ -28,6 +28,8 @@ $estimasi = estimasi_menit($quiz);
       <div class="alert alert-kuning mb-0">{!! icon('info') !!} Kuis belum memiliki soal.</div>
     @elseif ($publik)
       <a class="btn btn-besar" href="{{ route('login') }}">{!! icon('login') !!} Masuk untuk mulai</a>
+    @elseif (!empty($mengajar))
+      @if ($bisaKelola)<a class="btn btn-besar" href="{{ route('pengajar.hasil', $quiz['id']) }}">{!! icon('chart') !!} Lihat hasil peserta</a>@endif
     @else
       <form method="post">
         @csrf

@@ -234,8 +234,11 @@ class KuisTest extends TestCase
     public function test_draft_tidak_bisa_dimulai(): void
     {
         $quiz = $this->buatKuis(['status' => 'draft']);
+        // Pengajar pemilik tidak mengerjakan kuis; peserta tidak bisa melihat draft sama sekali.
         $this->actingAs($this->guru)->post("/kuis/{$quiz->id}")->assertRedirect(route('kuis.show', $quiz->id));
-        $this->assertToast('Kuis masih draft. Terbitkan terlebih dahulu agar dapat dikerjakan.');
+        $this->assertToast('Pengajar dan administrator tidak mengerjakan kuis. Gunakan Kelola soal untuk memeriksa isi kuis.');
+        $peserta = User::where('role', 'peserta')->firstOrFail();
+        $this->actingAs($peserta)->post("/kuis/{$quiz->id}")->assertNotFound();
         $this->assertSame(0, Attempt::count());
     }
 
