@@ -10,6 +10,29 @@ class RoomController extends Controller
 {
     public function __construct(private RoomService $rooms) {}
 
+    /** Semua room: pengajar melihat room di kuisnya, admin melihat seluruh room. */
+    public function overview(Request $request)
+    {
+        $admin = $this->user()->hasRole('admin');
+        $ownerId = $admin ? null : $this->user()->id;
+        $status = (string) $request->input('status');
+        $f = [
+            'q' => mb_substr(trim((string) $request->input('q')), 0, 100),
+            'status' => isset(\App\Models\Room::STATUS[$status]) ? $status : '',
+        ];
+        $pg = paginate($this->rooms->overviewCount($ownerId, $f), 15);
+
+        return view('pengajar.rooms', [
+            'title' => $admin ? 'Pantau Room' : 'Room Saya',
+            'menu' => 'room-pantau',
+            'admin' => $admin,
+            'f' => $f,
+            'rows' => $this->rooms->overview($ownerId, $f, $pg['limit'], $pg['offset']),
+            'aktif' => $this->rooms->overviewCount($ownerId, ['status' => 'buka']),
+            'pg' => $pg,
+        ]);
+    }
+
     public function index(Request $request, int $kuis)
     {
         $quiz = $this->kuisKelola($kuis);

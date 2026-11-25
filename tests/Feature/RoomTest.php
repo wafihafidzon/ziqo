@@ -113,6 +113,41 @@ class RoomTest extends TestCase
         $this->actingAs($lain)->post(route('pengajar.room', $this->quiz->id), ['aksi' => 'buat'])->assertForbidden();
     }
 
+    public function test_pengajar_dan_admin_tidak_bisa_masuk_room(): void
+    {
+        $room = $this->buatRoom();
+        $admin = User::where('email', 'admin@ziqo.id')->firstOrFail();
+
+        foreach ([$this->guru, $admin] as $u) {
+            $this->actingAs($u)->get(route('room', ['kode' => $room->kode_akses]))->assertRedirect(route('pengajar.rooms'));
+            $this->actingAs($u)->post(route('room'), ['kode' => $room->kode_akses])->assertForbidden();
+            $this->actingAs($u)->get(route('dashboard'))->assertDontSee('Masuk Room');
+        }
+        $this->assertSame(0, $room->attempts()->count());
+        $this->actingAs($this->peserta)->get(route('dashboard'))->assertSee('Masuk Room');
+    }
+
+    public function test_ringkasan_room_pengajar_hanya_kuis_sendiri_admin_semua(): void
+    {
+        $milikGuru = $this->buatRoom();
+        $this->actingAs($this->peserta)->post(route('room'), ['kode' => $milikGuru->kode_akses]);
+
+        $lain = User::where('email', 'dimas@ziqo.id')->firstOrFail();
+        $kuisLain = Quiz::where('user_id', $lain->id)->firstOrFail();
+        $milikLain = Room::create(['quiz_id' => $kuisLain->id, 'user_id' => $lain->id, 'kode_akses' => 'LAIN22', 'status' => 'tutup']);
+
+        $this->actingAs($this->guru)->get(route('pengajar.rooms'))->assertOk()
+            ->assertSee($milikGuru->kode_akses)->assertSee($this->peserta->nama)->assertDontSee($milikLain->kode_akses);
+
+        $admin = User::where('email', 'admin@ziqo.id')->firstOrFail();
+        $this->actingAs($admin)->get(route('pengajar.rooms'))->assertOk()
+            ->assertSee($milikGuru->kode_akses)->assertSee($milikLain->kode_akses);
+        $this->actingAs($admin)->get(route('pengajar.rooms', ['status' => 'buka']))->assertOk()
+            ->assertSee($milikGuru->kode_akses)->assertDontSee($milikLain->kode_akses);
+
+        $this->actingAs($this->peserta)->get(route('pengajar.rooms'))->assertForbidden();
+    }
+
     public function test_halaman_masuk_room_mengisi_kode_dari_tautan(): void
     {
         $this->actingAs($this->peserta)->get(route('room', ['kode' => 'k7qx-2m']))

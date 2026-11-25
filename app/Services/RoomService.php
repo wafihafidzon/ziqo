@@ -6,6 +6,7 @@ use App\Models\Attempt;
 use App\Models\Quiz;
 use App\Models\Room;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 class RoomService
@@ -18,6 +19,37 @@ class RoomService
     public function forQuiz(int $quizId): Collection
     {
         return Room::where('quiz_id', $quizId)->withCount('attempts')->latest('id')->get();
+    }
+
+    /**
+     * Ringkasan room lintas kuis. $ownerId null = semua room (admin),
+     * selain itu hanya room di kuis milik pengajar tersebut.
+     */
+    public function overview(?int $ownerId, array $f, int $limit, int $offset = 0): Collection
+    {
+        return $this->overviewQuery($ownerId, $f)
+            ->with(['quiz:id,judul,user_id', 'quiz.owner:id,nama', 'attempts' => fn ($a) => $a->with('user:id,nama')->latest('id')->limit(3)])
+            ->withCount(['attempts', 'attempts as sedang_count' => fn ($a) => $a->where('status', 'berlangsung')])
+            ->orderByRaw("CASE status WHEN 'buka' THEN 0 ELSE 1 END")
+            ->latest('id')
+            ->limit($limit)->offset($offset)
+            ->get();
+    }
+
+    public function overviewCount(?int $ownerId, array $f): int
+    {
+        return $this->overviewQuery($ownerId, $f)->count();
+    }
+
+    private function overviewQuery(?int $ownerId, array $f): Builder
+    {
+        $kata = $f['q'] ?? '';
+        return Room::query()
+            ->when($ownerId, fn (Builder $q) => $q->whereHas('quiz', fn (Builder $k) => $k->where('user_id', $ownerId)))
+            ->when(($f['status'] ?? '') !== '', fn (Builder $q) => $q->where('status', $f['status']))
+            ->when($kata !== '', fn (Builder $q) => $q->where(fn (Builder $w) => $w
+                ->where('kode_akses', 'like', '%' . $this->normalize($kata) . '%')
+                ->orWhereHas('quiz', fn (Builder $k) => $k->where('judul', 'like', "%$kata%"))));
     }
 
     public function find(int $quizId, int $roomId): ?Room

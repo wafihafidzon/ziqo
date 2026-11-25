@@ -7,7 +7,7 @@ $nav = [
     ['', [
         ['dashboard', route('dashboard'), 'Dashboard', 'home'],
         ['jelajah', route('jelajah'), 'Jelajah Kuis', 'jelajah'],
-        ['room', route('room'), 'Masuk Room', 'kunci'],
+        ...($guru ? [] : [['room', route('room'), 'Masuk Room', 'kunci']]),
         ['riwayat', route('riwayat'), 'Riwayat', 'riwayat'],
         ['pencapaian', route('pencapaian'), 'Pencapaian', 'trofi'],
         ['profil', route('profil'), 'Profil', 'profil'],
@@ -15,16 +15,18 @@ $nav = [
 ];
 if ($guru) {
     $esaiMenunggu = min(99, app(\App\Services\StatsService::class)->pendingEssayCount($admin ? null : $u->id));
-    $nav[] = ['Mengajar', [
+    $nav[] = ['Mengajar', array_filter([
         ['kuis-saya', route('pengajar.kuis'), $admin ? 'Kuis Buatan Saya' : 'Kuis Saya', 'quiz'],
+        $admin ? null : ['room-pantau', route('pengajar.rooms'), 'Room Saya', 'kunci'],
         ['penilaian', route('pengajar.penilaian'), 'Penilaian Esai', 'pena', $esaiMenunggu],
-    ]];
+    ])];
 }
 if ($admin) {
     $nav[] = ['Administrator', [
         ['admin-pengguna', route('admin.pengguna'), 'Pengguna', 'pengguna'],
         ['admin-kategori', route('admin.kategori'), 'Kategori & Topik', 'kategori'],
         ['admin-kuis', route('admin.kuis'), 'Pantau Kuis', 'perisai'],
+        ['room-pantau', route('pengajar.rooms'), 'Pantau Room', 'kunci'],
     ]];
 }
 @endphp

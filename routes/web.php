@@ -55,6 +55,7 @@ Route::middleware('auth')->group(function () {
         Route::match(['get', 'post'], '/kuis/{kuis}/soal/buat', [Pengajar\QuestionController::class, 'form'])->whereNumber('kuis')->name('soal.create');
         Route::match(['get', 'post'], '/kuis/{kuis}/soal/{id}/edit', [Pengajar\QuestionController::class, 'form'])->whereNumber(['kuis', 'id'])->name('soal.edit');
 
+        Route::get('/room', [Pengajar\RoomController::class, 'overview'])->name('rooms');
         Route::get('/kuis/{kuis}/room', [Pengajar\RoomController::class, 'index'])->whereNumber('kuis')->name('room');
         Route::post('/kuis/{kuis}/room', [Pengajar\RoomController::class, 'action'])->whereNumber('kuis');
 

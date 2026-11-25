@@ -13,6 +13,11 @@ class RoomController extends Controller
 
     public function show(Request $request)
     {
+        if ($this->bukanPeserta()) {
+            flash('info', 'Masuk room hanya untuk peserta. Pantau room dan pesertanya di halaman ini.');
+            return redirect()->route('pengajar.rooms');
+        }
+
         return view('room', [
             'title' => 'Masuk Room',
             'menu' => 'room',
@@ -23,6 +28,8 @@ class RoomController extends Controller
 
     public function join(Request $request, QuizService $quizzes, AttemptService $attempts)
     {
+        abort_if($this->bukanPeserta(), 403, 'Pengajar dan administrator tidak ikut mengerjakan kuis di room.');
+
         $room = $this->rooms->findByCode($this->rooms->normalize($request->input('kode')));
         if (!$room) return $this->gagal(['kode' => 'Kode room tidak ditemukan. Periksa lagi kode dari pengajarmu.']);
         if ($room->status !== 'buka') return $this->gagal(['kode' => 'Room ini sudah ditutup oleh pengajar.']);
@@ -33,5 +40,11 @@ class RoomController extends Controller
         }
 
         return redirect()->route('kerjakan', $attempts->start($quiz, $this->user()->id, $room->id)->id);
+    }
+
+    /** Room dipakai peserta untuk mengerjakan; pengajar/admin hanya memantau. */
+    private function bukanPeserta(): bool
+    {
+        return $this->user()->hasRole('pengajar', 'admin');
     }
 }
