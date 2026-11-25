@@ -39,7 +39,7 @@
         <ul>
           <li>Administrator: admin@ziqo.id / admin123</li>
           <li>Pengajar: guru@ziqo.id / guru1234</li>
-          <li>Peserta: demo@ziqo.id / demo123</li>
+          <li>Peserta: demo@ziqo.id / demo1234</li>
         </ul>
       </div>
     </div>

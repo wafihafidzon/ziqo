@@ -32,14 +32,14 @@ class ZiqoTest extends TestCase
     {
         $this->post('/login', ['email' => 'demo@ziqo.id', 'password' => 'salah'])
             ->assertSessionHas('login_error', 'Email atau password belum sesuai.');
-        $this->post('/login', ['email' => 'DEMO@ziqo.id', 'password' => 'demo123'])->assertRedirect('/dashboard');
+        $this->post('/login', ['email' => 'DEMO@ziqo.id', 'password' => 'demo1234'])->assertRedirect('/dashboard');
         $this->assertAuthenticatedAs($this->user('demo@ziqo.id'));
     }
 
     public function test_akun_nonaktif_tidak_bisa_masuk(): void
     {
         $this->user('demo@ziqo.id')->update(['status' => 'nonaktif']);
-        $this->post('/login', ['email' => 'demo@ziqo.id', 'password' => 'demo123'])
+        $this->post('/login', ['email' => 'demo@ziqo.id', 'password' => 'demo1234'])
             ->assertSessionHas('login_error', 'Akun kamu sedang dinonaktifkan. Hubungi administrator.');
         $this->assertGuest();
     }

@@ -9,7 +9,7 @@ $users = [
     ['Bu Rina Pratiwi', 'guru@ziqo.id', '$2y$10$ANjd..Lf5K/RXQe1688xb.3z1L9YS5A1gCgZEs0BaICVDOrtFHNwW', 'pengajar', null, null], // guru1234
     ['Pak Dimas Arya', 'dimas@ziqo.id', '$2y$10$ANjd..Lf5K/RXQe1688xb.3z1L9YS5A1gCgZEs0BaICVDOrtFHNwW', 'pengajar', null, null], // guru1234
     // Akun lama dari data.json (password lama dipertahankan, kini disimpan sebagai hash)
-    ['Demo ZIQO', 'demo@ziqo.id', '$2y$10$Hzx/5OkYz6mbVQtWg7jQh.Fkn64UH8TiIS.rsWXbFvDB198UP5NUW', 'peserta', null, 'sma'],     // demo123
+    ['Demo ZIQO', 'demo@ziqo.id', '$2y$10$qmT5HzJdoOEjs0OMkkhFa.eCiap5Z7C.OA1uYg1ukxh9XiDchPtAK', 'peserta', null, 'sma'],    // demo1234
     ['testinguser', 'testing@mail.com', '$2y$10$CB6T6ooYJPaqu4aMxcWovOPgYz5p1Zp84vJyF85LbSW7gSx24feou', 'peserta', null, null], // testing
     ['User Ganteng Cantik', 'usergantengcantik@gmail.com', '$2y$10$m51DYpML5W4TPay3S73PSOBnAgLpfnUzx./PFXcIcz28DdbGHmDtK', 'peserta', '08123456789', null], // user123
 ];

@@ -43,7 +43,7 @@ Lalu jalankan `php artisan migrate --seed`.
 | Administrator | admin@ziqo.id | admin123 |
 | Pengajar | guru@ziqo.id | guru1234 |
 | Pengajar | dimas@ziqo.id | guru1234 |
-| Peserta | demo@ziqo.id | demo123 |
+| Peserta | demo@ziqo.id | demo1234 |
 | Peserta | usergantengcantik@gmail.com | user123 |
 | Peserta | testing@mail.com | testing |
 
