@@ -77,6 +77,13 @@ class QuizController extends Controller
             flash('error', 'Kuis ini belum memiliki soal.');
             return redirect()->route('kuis.show', $id);
         }
+        // Kuis khusus room tidak bisa dimulai dari sini; percobaan yang sudah berjalan (dari room) tetap boleh dilanjutkan.
+        if ($quiz->hanyaRoom()) {
+            $berlangsung = $attempts->ongoing($id, $this->user()->id);
+            if ($berlangsung && !$attempts->isExpired($berlangsung, $quiz)) return redirect()->route('kerjakan', $berlangsung->id);
+            flash('info', 'Kuis ini hanya bisa dikerjakan lewat room. Masukkan kode akses dari pengajarmu.');
+            return redirect()->route('room');
+        }
         return redirect()->route('kerjakan', $attempts->start($quiz, $this->user()->id)->id);
     }
 

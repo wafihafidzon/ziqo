@@ -65,7 +65,7 @@ class QuizController extends Controller
             return redirect()->route('pengajar.soal', $baru->id);
         }
 
-        $bawaan = ['kesulitan' => 'mudah', 'jenjang' => 'umum', 'durasi_menit' => 0, 'tampilkan_feedback' => 1, 'navigasi_bebas' => 1];
+        $bawaan = ['kesulitan' => 'mudah', 'jenjang' => 'umum', 'durasi_menit' => 0, 'tampilkan_feedback' => 1, 'navigasi_bebas' => 1, 'akses' => 'publik'];
         return view('pengajar.kuis-form', [
             'title' => $quiz ? 'Edit Kuis' : 'Buat Kuis',
             'menu' => 'kuis-saya',

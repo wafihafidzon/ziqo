@@ -74,14 +74,14 @@ class QuizService
         return $aktif;
     }
 
-    /** Jelajah hanya menampilkan kuis terbit yang sudah punya minimal satu soal. */
+    /** Jelajah hanya menampilkan kuis terbit dan publik yang sudah punya minimal satu soal. */
     private function exploreQuery(array $f): Builder
     {
         $tipe = $f['tipe'] ?? '';
         $kesulitan = $f['kesulitan'] ?? '';
         $jenjang = $f['jenjang'] ?? '';
 
-        return Quiz::query()->terbit()->has('questions')
+        return Quiz::query()->terbit()->where('akses', 'publik')->has('questions')
             ->when($f['q'] ?? '', fn (Builder $q, string $kata) => $q->where(fn (Builder $w) => $w
                 ->where('judul', 'like', "%$kata%")
                 ->orWhere('deskripsi', 'like', "%$kata%")
@@ -249,6 +249,7 @@ class QuizService
             'durasi_menit' => (int) ($in['durasi_menit'] ?? 0),
             'tampilkan_feedback' => !empty($in['tampilkan_feedback']),
             'navigasi_bebas' => !empty($in['navigasi_bebas']),
+            'akses' => isset(Quiz::AKSES[$in['akses'] ?? '']) ? $in['akses'] : 'publik',
         ];
         return [$data, $errors];
     }

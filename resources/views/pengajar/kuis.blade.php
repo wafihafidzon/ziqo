@@ -25,7 +25,7 @@
             <td><span class="chip {!! warna($k['warna']) !!}">{{ $k['kategori'] }}</span></td>
             <td class="num">{!! (int) $k['jumlah_soal'] !!}</td>
             <td class="num">{!! (int) $k['jumlah_percobaan'] !!}</td>
-            <td><span class="status status-{{ $k['status'] }}">{!! $k['status'] === 'terbit' ? 'Terbit' : 'Draft' !!}</span></td>
+            <td><span class="status status-{{ $k['status'] }}">{!! $k['status'] === 'terbit' ? 'Terbit' : 'Draft' !!}</span>@if ($k['akses'] === 'room')<br><small class="muted">{!! icon('kunci') !!} Hanya lewat room</small>@endif</td>
             <td>
               <div class="aksi">
                 <a class="btn btn-kecil" href="{{ route('pengajar.soal', $k['id']) }}">{!! icon('soal') !!} Soal</a>

@@ -158,6 +158,39 @@ class RoomTest extends TestCase
         $this->actingAs($this->peserta)->get(route('riwayat'))->assertOk();
     }
 
+    public function test_pengajar_menyetel_akses_hanya_lewat_room(): void
+    {
+        $q = $this->quiz;
+        $this->actingAs($this->guru)->post(route('pengajar.kuis.edit', $q->id), [
+            'judul' => $q->judul, 'category_id' => $q->category_id, 'subcategory_id' => $q->subcategory_id,
+            'kesulitan' => $q->kesulitan, 'jenjang' => $q->jenjang, 'durasi_menit' => $q->durasi_menit, 'akses' => 'room',
+        ])->assertRedirect(route('pengajar.soal', $q->id));
+        $this->assertSame('room', $q->fresh()->akses);
+        $this->actingAs($this->guru)->get(route('pengajar.kuis'))->assertSee('Hanya lewat room');
+    }
+
+    public function test_kuis_hanya_room_tersembunyi_dan_hanya_bisa_lewat_room(): void
+    {
+        $this->quiz->update(['akses' => 'room']);
+        $judul = $this->quiz->judul;
+
+        $this->actingAs($this->peserta)->get(route('jelajah'))->assertOk()->assertDontSee($judul);
+        $this->actingAs($this->peserta)->get(route('kuis.show', $this->quiz->id))->assertOk()
+            ->assertSee('hanya bisa dikerjakan lewat room')->assertDontSee('Mulai kuis');
+        $this->actingAs($this->peserta)->post('/kuis/' . $this->quiz->id)->assertRedirect(route('room'));
+        $this->assertSame(0, Attempt::where('user_id', $this->peserta->id)->count());
+
+        // Lewat room tetap bisa, dan setelah itu tombol lanjutkan mengarah ke percobaan yang sama.
+        $room = $this->buatRoom();
+        $this->actingAs($this->peserta)->post(route('room'), ['kode' => $room->kode_akses]);
+        $attempt = Attempt::where('user_id', $this->peserta->id)->firstOrFail();
+        $this->assertSame($room->id, (int) $attempt->room_id);
+        $this->actingAs($this->peserta)->post('/kuis/' . $this->quiz->id)->assertRedirect(route('kerjakan', $attempt->id));
+
+        $this->quiz->update(['akses' => 'publik']);
+        $this->actingAs($this->peserta)->get(route('jelajah'))->assertSee($judul);
+    }
+
     public function test_ringkasan_room_pengajar_hanya_kuis_sendiri_admin_semua(): void
     {
         $milikGuru = $this->buatRoom();

@@ -30,6 +30,9 @@ $estimasi = estimasi_menit($quiz);
       <a class="btn btn-besar" href="{{ route('login') }}">{!! icon('login') !!} Masuk untuk mulai</a>
     @elseif (!empty($mengajar))
       @if ($bisaKelola)<a class="btn btn-besar" href="{{ route('pengajar.hasil', $quiz['id']) }}">{!! icon('chart') !!} Lihat hasil peserta</a>@endif
+    @elseif ($quiz->hanyaRoom() && !$berlangsung)
+      <div class="alert alert-kuning mb-0">{!! icon('kunci') !!} Kuis ini hanya bisa dikerjakan lewat room.</div>
+      <a class="btn btn-besar" href="{{ route('room') }}">{!! icon('kunci') !!} Masuk room</a>
     @else
       <form method="post">
         @csrf

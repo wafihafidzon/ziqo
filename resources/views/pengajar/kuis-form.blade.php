@@ -66,6 +66,13 @@
         <div class="bantuan">Isi 0 untuk tanpa batas waktu. Maksimal 180 menit.</div>
         {!! err($errors, 'durasi_menit') !!}
       </div>
+      <div class="field">
+        <label for="akses">Akses kuis</label>
+        <select class="input" id="akses" name="akses" required>
+          @foreach (\App\Models\Quiz::AKSES as $k => $l)<option value="{!! $k !!}" {!! $g('akses') === $k ? 'selected' : '' !!}>{{ $l }}</option>@endforeach
+        </select>
+        <div class="bantuan">Publik: tampil di Jelajah dan bisa dikerjakan kapan saja. Hanya lewat room: tidak tampil di Jelajah; peserta masuk dengan kode room darimu (cocok untuk ulangan).</div>
+      </div>
       <div class="field"><label class="cek"><input type="checkbox" name="tampilkan_feedback" value="1" {!! $g('tampilkan_feedback') ? 'checked' : '' !!}> Umpan balik langsung (tombol "Cek jawaban")</label>
         <div class="bantuan">Peserta melihat benar/salah dan pembahasan per soal. Jawaban yang sudah dicek terkunci.</div></div>
       <div class="field"><label class="cek"><input type="checkbox" name="navigasi_bebas" value="1" {!! $g('navigasi_bebas') ? 'checked' : '' !!}> Navigasi bebas antarsoal</label>

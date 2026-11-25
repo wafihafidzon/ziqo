@@ -17,6 +17,14 @@ class Quiz extends Model
         'navigasi_bebas' => 'boolean',
     ];
 
+    /** publik = tampil di Jelajah; room = tersembunyi, hanya bisa dikerjakan lewat kode room. */
+    public const AKSES = ['publik' => 'Publik', 'room' => 'Hanya lewat room'];
+
+    public function hanyaRoom(): bool
+    {
+        return $this->akses === 'room';
+    }
+
     public const SORT = [
         'terbaru' => 'Terbaru',
         'populer' => 'Populer',

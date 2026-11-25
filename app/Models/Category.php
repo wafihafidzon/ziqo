@@ -39,11 +39,11 @@ class Category extends Model
         $query->orderBy('nama');
     }
 
-    /** Kategori + jumlah kuis terbit sebagai `jumlah_kuis`. */
+    /** Kategori + jumlah kuis terbit yang tampil di Jelajah (publik) sebagai `jumlah_kuis`. */
     public static function withPublishedCount(): Collection
     {
         return static::urutNama()
-            ->withCount(['quizzes as jumlah_kuis' => fn (Builder $q) => $q->where('status', 'terbit')])
+            ->withCount(['quizzes as jumlah_kuis' => fn (Builder $q) => $q->where('status', 'terbit')->where('akses', 'publik')])
             ->get();
     }
 
